@@ -1,0 +1,10 @@
+#!/bin/sh
+[ -e /sys/class/graphics/fb0/virtual_size ] &&
+    (cat /sys/class/graphics/fb0/virtual_size | sed -e 's/,/x/') && exit 0
+for f in /sys/class/drm/card*-*; do
+    [ -e $f/status ] &&
+    [ $(cat $f/status) = 'connected' ] &&
+    [ -e $f/modes ] &&
+        head -1 $f/modes && exit 0
+done
+echo 1024x768

@@ -1,0 +1,25 @@
+[Unit]
+Description=Initialize Wine
+After=systemd-user-sessions.service
+ConditionPathExists=/dev/tty0
+Wants=dbus.socket systemd-logind.service
+After=dbus.socket systemd-logind.service
+Before=gui@.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root
+ExecStart=wineboot -i
+ExecStart=wineboot -u
+Restart=on-abnormal
+User=root
+UtmpIdentifier=tty0
+UtmpMode=user
+TTYPath=/dev/tty0
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+StandardInput=tty-fail
+
+[Install]
+WantedBy=graphical.target

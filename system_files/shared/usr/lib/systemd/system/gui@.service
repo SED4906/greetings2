@@ -1,0 +1,28 @@
+[Unit]
+Description=GUI on %I
+After=systemd-user-sessions.service
+ConditionPathExists=/dev/tty0
+Wants=dbus.socket systemd-logind.service wineboot.service
+After=dbus.socket systemd-logind.service wineboot.service
+Conflicts=getty@%i.service
+After=getty@%i.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root
+Environment=WLR_RENDERER_ALLOW_SOFTWARE=1
+ExecStart=sh -c "cage -s -- wine explorer /desktop=shell,$(get_screen_resolution)"
+Restart=always
+User=root
+UtmpIdentifier=%I
+UtmpMode=user
+TTYPath=/dev/%I
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+StandardInput=tty-fail
+PAMName=gui
+
+[Install]
+WantedBy=graphical.target
+DefaultInstance=tty1
